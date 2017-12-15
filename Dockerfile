@@ -3,7 +3,7 @@
 
 FROM alpine
 
-LABEL maintainer="Ivan Krizsan, https://github.com/krizsan"
+LABEL maintainer="ShiftForward <info@shiftforward.eu>"
 
 # Set this environment variable to True to set timezone on container start.
 ENV SET_CONTAINER_TIMEZONE False
@@ -53,16 +53,13 @@ RUN python setup.py install && \
     pip install -e . && \
     pip uninstall twilio --yes && \
     pip install twilio==6.0.0 && \
-
 # Install Supervisor.
     easy_install supervisor && \
-
 # Create directories. The /var/empty directory is used by openntpd.
     mkdir -p "${CONFIG_DIR}" && \
     mkdir -p "${RULES_DIRECTORY}" && \
     mkdir -p "${LOG_DIR}" && \
     mkdir -p /var/empty && \
-
 # Clean up.
     apk del python2-dev && \
     apk del musl-dev && \
