@@ -5,12 +5,15 @@ FROM alpine
 
 LABEL maintainer="ShiftForward <info@shiftforward.eu>"
 
+# The ElastAlert version to use. Configurable on build time. 
+ARG ELASTALERT_VERSION=master
+
 # Set this environment variable to True to set timezone on container start.
 ENV SET_CONTAINER_TIMEZONE False
 # Default container timezone as found under the directory /usr/share/zoneinfo/.
 ENV CONTAINER_TIMEZONE Europe/Stockholm
 # URL from which to download Elastalert.
-ENV ELASTALERT_URL https://github.com/Yelp/elastalert/archive/master.zip
+ENV ELASTALERT_URL https://github.com/Yelp/elastalert/archive/$ELASTALERT_VERSION.zip
 # Directory holding configuration for Elastalert and Supervisor.
 ENV CONFIG_DIR /opt/config
 # Elastalert rules directory.
