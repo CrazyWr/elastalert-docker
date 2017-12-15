@@ -45,6 +45,14 @@ if [ ! -f ${ELASTALERT_CONFIG} ]; then
     sed -i -e"s|es_host: [[:print:]]*|es_host: ${ELASTICSEARCH_HOST}|g" "${ELASTALERT_CONFIG}"
     # Set the port used by Elasticsearch at the above address.
     sed -i -e"s|es_port: [0-9]*|es_port: ${ELASTICSEARCH_PORT}|g" "${ELASTALERT_CONFIG}"
+    # Set whether Elasticsearch should be accessed using SSL.
+    if [ -n "${ELASTICSEARCH_TLS}" ]; then
+        sed -i -e"s|#use_ssl: [[:print:]]*|use_ssl: ${ELASTICSEARCH_TLS}|g" "${ELASTALERT_CONFIG}"
+    fi
+    # Set whether to verify SSL certificates.
+    if [ -n "${ELASTICSEARCH_TLS_VERIFY}" ]; then
+        sed -i -e"s|#verify_certs: [[:print:]]*|verify_certs: ${ELASTICSEARCH_TLS}|g" "${ELASTALERT_CONFIG}"
+    fi
     # Set the user name used to authenticate with Elasticsearch.
     if [ -n "${ELASTICSEARCH_USER}" ]; then
         sed -i -e"s|#es_username: [[:print:]]*|es_username: ${ELASTICSEARCH_USER}|g" "${ELASTALERT_CONFIG}"
