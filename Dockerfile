@@ -3,10 +3,10 @@
 
 FROM alpine
 
-LABEL maintainer="ShiftForward <info@shiftforward.eu>"
+LABEL maintainer="Velocidi <engineering@velocidi.com>"
 
 # The ElastAlert version to use. Configurable on build time. 
-ARG ELASTALERT_VERSION=master
+ARG ELASTALERT_VERSION=v0.2.0b2
 
 # Set this environment variable to True to set timezone on container start.
 ENV SET_CONTAINER_TIMEZONE False
@@ -42,7 +42,7 @@ WORKDIR /opt
 # Install software required for Elastalert and NTP for time synchronization.
 RUN apk update && \
     apk upgrade && \
-    apk add ca-certificates openssl-dev openssl libffi-dev python2 python2-dev py2-pip py2-yaml gcc musl-dev tzdata openntpd wget && \
+    apk add ca-certificates openssl-dev openssl libffi-dev python2 python2-dev py2-pip py2-yaml gcc musl-dev tzdata libmagic openntpd wget && \
 # Download and unpack Elastalert.
     wget -O elastalert.zip "${ELASTALERT_URL}" && \
     unzip elastalert.zip && \
