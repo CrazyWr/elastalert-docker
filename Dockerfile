@@ -1,12 +1,12 @@
 # Elastalert Docker image running on Alpine Linux.
 # Build image with: docker build -t ivankrizsan/elastalert:latest .
 
-FROM alpine
+FROM python:3.6-alpine
 
 LABEL maintainer="Velocidi <engineering@velocidi.com>"
 
 # The ElastAlert version to use. Configurable on build time. 
-ARG ELASTALERT_VERSION=v0.2.0b2
+ARG ELASTALERT_VERSION=v0.2.1
 
 # Set this environment variable to True to set timezone on container start.
 ENV SET_CONTAINER_TIMEZONE False
@@ -39,23 +39,14 @@ ENV ELASTALERT_INDEX elastalert_status
 
 WORKDIR /opt
 
-# Install software required for Elastalert and NTP for time synchronization.
-RUN apk update && \
-    apk upgrade && \
-    apk add ca-certificates openssl-dev openssl libffi-dev python2 python2-dev py2-pip py2-yaml gcc musl-dev tzdata libmagic openntpd wget && \
-# Download and unpack Elastalert.
-    wget -O elastalert.zip "${ELASTALERT_URL}" && \
-    unzip elastalert.zip && \
-    rm elastalert.zip && \
-    mv e* "${ELASTALERT_HOME}"
+# Install software required for Elastalert
+RUN apk --update upgrade && \
+    apk add gcc libffi-dev musl-dev python-dev openssl-dev tzdata libmagic
 
 WORKDIR "${ELASTALERT_HOME}"
 
 # Install Elastalert.
-RUN python setup.py install && \
-    pip install -e . && \
-    pip uninstall twilio --yes && \
-    pip install twilio==6.0.0 && \
+RUN pip install elastalert=="${ELASTALERT_VERSION}" && \
 # Install Supervisor.
     easy_install supervisor && \
 # Create directories. The /var/empty directory is used by openntpd.
@@ -64,11 +55,11 @@ RUN python setup.py install && \
     mkdir -p "${LOG_DIR}" && \
     mkdir -p /var/empty && \
 # Clean up.
-    apk del python2-dev && \
-    apk del musl-dev && \
     apk del gcc && \
-    apk del openssl-dev && \
     apk del libffi-dev && \
+    apk del musl-dev && \
+    apk del python-dev && \
+    apk del openssl-dev && \
     rm -rf /var/cache/apk/*
 
 # Copy the script used to launch the Elastalert when a container is started.
