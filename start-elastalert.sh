@@ -60,6 +60,12 @@ if [ ! -f ${ELASTALERT_CONFIG} ]; then
     sed -i -e"s|writeback_index: [[:print:]]*|writeback_index: ${ELASTALERT_INDEX}|g" "${ELASTALERT_CONFIG}"
 fi
 
+# Replace env-vars
+if [ -f ${ELASTALERT_CONFIG} ]; then
+    envsubst < ${ELASTALERT_CONFIG} > ${ELASTALERT_CONFIG}.tmp
+    mv ${ELASTALERT_CONFIG}.tmp ${ELASTALERT_CONFIG}
+fi
+
 # Elastalert Supervisor configuration:
 if [ ! -f ${ELASTALERT_SUPERVISOR_CONF} ]; then
     cp "${ELASTALERT_HOME}/supervisord.conf.example" "${ELASTALERT_SUPERVISOR_CONF}" && \
@@ -70,6 +76,12 @@ if [ ! -f ${ELASTALERT_SUPERVISOR_CONF} ]; then
     sed -i -e"s|stderr_logfile=.*log|stderr_logfile=${LOG_DIR}/elastalert_stderr.log|g" "${ELASTALERT_SUPERVISOR_CONF}"
     # Modify the start-command.
     sed -i -e"s|python elastalert.py|elastalert --config ${ELASTALERT_CONFIG}|g" "${ELASTALERT_SUPERVISOR_CONF}"
+fi
+
+# Replace env-vars
+if [ -f ${ELASTALERT_SUPERVISOR_CONF} ]; then
+    envsubst < ${ELASTALERT_SUPERVISOR_CONF} > ${ELASTALERT_SUPERVISOR_CONF}.tmp
+    mv ${ELASTALERT_SUPERVISOR_CONF}.tmp ${ELASTALERT_SUPERVISOR_CONF}
 fi
 
 # Set authentication if needed

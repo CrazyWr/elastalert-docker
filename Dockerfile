@@ -41,12 +41,18 @@ WORKDIR /opt
 
 # Install software required for Elastalert
 RUN apk --update upgrade && \
-    apk add gcc libffi-dev musl-dev python-dev openssl-dev tzdata libmagic
+    apk add gcc libffi-dev musl-dev python-dev openssl-dev tzdata libmagic gettext
+
+# Download Elastalert.
+RUN wget -O elastalert.zip "https://github.com/Yelp/elastalert/archive/${ELASTALERT_VERSION}.zip" && \
+    unzip elastalert.zip && \
+    rm elastalert.zip && \
+    mv elastalert* "${ELASTALERT_HOME}"
 
 WORKDIR "${ELASTALERT_HOME}"
 
 # Install Elastalert.
-RUN pip install elastalert=="${ELASTALERT_VERSION}" && \
+RUN pip install "setuptools>=11.3" && python setup.py install && \
 # Install Supervisor.
     easy_install supervisor && \
 # Create directories. The /var/empty directory is used by openntpd.
