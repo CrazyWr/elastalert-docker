@@ -31,3 +31,5 @@ es_password: changeme
 - ELASTICSEARCH_TLS - Use HTTPS when connecting to Elasticsearch (True/False). Default is `False`.
 - ELASTICSEARCH_TLS_VERIFY - Verify server (Elasticsearch) certificate (True/False). Default is `False`.
 - ELASTALERT_INDEX - Name of Elastalert writeback index in Elasticseach. Defaults to `elastalert_status`.
+- ELASTALERT_CONFIG - Path for the elastalert config. If omitted, a config will be generated based on the config template.
+- ELASTALERT_SUPERVISOR_CONF - Path for the supervisord config. If omitted, a config will be generated based on the config template.
