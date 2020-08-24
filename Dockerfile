@@ -3,7 +3,7 @@
 
 FROM python:3.6-alpine
 
-LABEL maintainer="Velocidi <engineering@velocidi.com>"
+LABEL maintainer="Velocidi <wei.aaron.sky@gmail.com>"
 
 # The ElastAlert version to use. Configurable on build time. 
 ARG ELASTALERT_VERSION=v0.2.1
@@ -11,7 +11,7 @@ ARG ELASTALERT_VERSION=v0.2.1
 # Set this environment variable to True to set timezone on container start.
 ENV SET_CONTAINER_TIMEZONE False
 # Default container timezone as found under the directory /usr/share/zoneinfo/.
-ENV CONTAINER_TIMEZONE Europe/Stockholm
+ENV CONTAINER_TIMEZONE Asia/Shanghai
 # URL from which to download Elastalert.
 ENV ELASTALERT_URL https://github.com/Yelp/elastalert/archive/$ELASTALERT_VERSION.zip
 # Directory holding configuration for Elastalert and Supervisor.
@@ -41,7 +41,7 @@ WORKDIR /opt
 
 # Install software required for Elastalert
 RUN apk --update upgrade && \
-    apk add gcc libffi-dev musl-dev python-dev openssl-dev tzdata libmagic gettext
+    apk add gcc libffi-dev musl-dev python3-dev openssl-dev tzdata libmagic gettext
 
 # Download Elastalert.
 RUN wget -O elastalert.zip "https://github.com/Yelp/elastalert/archive/${ELASTALERT_VERSION}.zip" && \
@@ -53,18 +53,18 @@ WORKDIR "${ELASTALERT_HOME}"
 
 # Install Elastalert.
 RUN pip install "setuptools>=11.3" && python setup.py install && \
-# Install Supervisor.
+    # Install Supervisor.
     easy_install supervisor && \
-# Create directories. The /var/empty directory is used by openntpd.
+    # Create directories. The /var/empty directory is used by openntpd.
     mkdir -p "${CONFIG_DIR}" && \
     mkdir -p "${RULES_DIRECTORY}" && \
     mkdir -p "${LOG_DIR}" && \
     mkdir -p /var/empty && \
-# Clean up.
+    # Clean up.
     apk del gcc && \
     apk del libffi-dev && \
     apk del musl-dev && \
-    apk del python-dev && \
+    apk del python3-dev && \
     apk del openssl-dev && \
     rm -rf /var/cache/apk/*
 
